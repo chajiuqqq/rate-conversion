@@ -51,7 +51,9 @@ func NewConvertService(key string, expire time.Duration) *ConvertService {
 			case <-ticker.C:
 				for k, v := range service.cache {
 					if time.Since(v.createTime) > service.expire {
+						service.rwLock.Lock()
 						delete(service.cache, k)
+						service.rwLock.Unlock()
 					}
 				}
 			}
